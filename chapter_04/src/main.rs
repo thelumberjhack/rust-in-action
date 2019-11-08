@@ -1,4 +1,6 @@
 #![allow(unused_variables, dead_code)]
+use std::rc::Rc;
+use std::cell::RefCell;
 
 // #[derive(Debug)]
 // enum StatusMessage {
@@ -46,7 +48,9 @@ struct Message {
 }
 
 #[derive(Debug)]
-struct GroundStation;
+struct GroundStation {
+    radio_freq: f64,
+}
 
 impl GroundStation {
     fn send(&self, mailbox: &mut Mailbox, msg: Message) {
@@ -68,23 +72,19 @@ fn fetch_sat_ids() -> Vec<u64> {
 }
 
 fn main() {
-    let mut mail = Mailbox { messages: vec![] };
+    let base: Rc<RefCell<GroundStation>> = Rc::new(
+        RefCell::new(
+            GroundStation {
+                radio_freq: 87.65
+            }
+        )
+    );
 
-    let base = GroundStation {};
+    println!("base: {:?}", base);
 
-    let sat_ids = fetch_sat_ids();
-
-    for sat_id in sat_ids {
-        let sat = base.connect(sat_id);
-        let msg = Message { to: sat_id, content: String::from("hello") };
-
-        base.send(&mut mail, msg);
-    }
+    let mut base_3 = base.borrow_mut();
+    base_3.radio_freq += 43.21;
     
-    let sat_ids = fetch_sat_ids();
-    for sat_id in sat_ids {
-        let sat = base.connect(sat_id);
-        let msg = sat.recv(&mut mail);
-        println!("{:?}: {:?}", sat, msg);
-    }
+    println!("base: {:?}", base);
+    println!("base_3: {:?}", base_3);
 }
