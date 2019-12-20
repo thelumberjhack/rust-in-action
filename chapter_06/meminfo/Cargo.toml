@@ -1,0 +1,9 @@
+[package]
+name = "meminfo"
+version = "0.1.0"
+authors = ["Yannick Formaggio <yannick.formaggio@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+winapi = "0.3.8"
+kernel32-sys = "0.2.2"
